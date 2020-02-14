@@ -12,19 +12,34 @@ export class AboutPage implements OnInit {
   lastname: string;
   detail: string;
 
+
+  profiles : any;
+
   constructor() { }
 
   ngOnInit() {
+    this.loaddata();
+  }
 
-    // การนำข้อมูลจาก Database มาใช้
+  delete_data(id : any) {
+    console.log(id);
+    axios.get('http://localhost/ionicserver/delete_profile.php?id=' + id)
+        .then(() =>{
+          console.log("ลบข้อมูลเรียบร้อย");
+          this.loaddata();
+        });
+
+  }
+  loaddata(){
     axios.get('http://localhost/ionicserver/get_profile.php').then((response) => {
 
       // handle success
       console.log(response.data);
 
-      this.name = response.data[1].name;
-      this.lastname = response.data[1].lastname;
-      this.detail = response.data[1].detail;
+      this.profiles = response.data;
+      // this.name = response.data[1].name;
+      // this.lastname = response.data[1].lastname;
+      // this.detail = response.data[1].detail;
 
     })
       .catch((error) => {
@@ -35,6 +50,6 @@ export class AboutPage implements OnInit {
       .then(() => {
         // alway executed
       });
+    
   }
-
 }

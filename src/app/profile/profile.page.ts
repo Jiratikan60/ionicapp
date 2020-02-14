@@ -49,6 +49,11 @@ export class ProfilePage implements OnInit {
       detail: this.input_detail
     }).then((response) => {
       console.log(response);
+      
+      this.input_name = '';
+      this.input_lastname = '';
+      this.input_detail = '';
+
     }).catch((error) => {
       console.log(error);
     });
