@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from "@ionic/angular";
-import axios from 'axios'
+import axios from 'axios';
 
 @Component({
   selector: 'app-customer',
@@ -15,59 +14,86 @@ export class CustomerPage implements OnInit {
   c_address: string;
   c_tel: string;
 
-  inputc_id: string;
-  inputc_name: string;
-  inputc_lastname: string;
-  inputc_address: string;
-  inputc_tel: string;
+  input_id: string;
+  input_name: string;
+  input_lastname: string;
+  input_address: string;
+  input_tel: string;
 
-  constructor(public alertController: AlertController) { }
+  customers: any;
+
+  constructor() { }
 
   ngOnInit() {
-    axios.get('http://localhost/ionicserver/add_customers.php').then((response) => {
-      //handle success
+    this.loaddata();
+    axios.get('http://localhost/ionicserver/get_customer.php').then((response) => {
+
       console.log(response.data);
       this.c_id = response.data[0].c_id;
       this.c_name = response.data[0].c_name;
       this.c_lastname = response.data[0].c_lastname;
       this.c_address = response.data[0].c_address;
-      this.c_tel = response.data[0].c_tel ;
+      this.c_tel = response.data[0].c_tel;
 
     })
-    .catch((error) => {
-      //handel error
+      .catch((error) => {
+
+        console.log(error);
+      })
+      .then(() => {
+
+      });
+  }
+  register() {
+    console.log('input_id:' + this.input_id);
+    console.log('input_name:' + this.input_name);
+    console.log('input_lastname:' + this.input_lastname);
+    console.log('input_address:' + this.input_address);
+    console.log('input_tel:' + this.input_tel);
+
+    axios.post('http://localhost/ionicserver/add_customer.php', {
+      c_id: this.input_id,
+      c_name: this.input_name,
+      c_lastname: this.input_lastname,
+      c_address: this.input_address,
+      c_tel: this.input_tel
+    }).then((response) => {
+      console.log(response);
+
+      this.input_id = '';
+      this.input_name = '';
+      this.input_lastname = '';
+      this.input_address = '';
+      this.input_tel = '';
+
+    }).catch((error) => {
       console.log(error);
-    })
-    .then(() => {
-      //always executed
     });
-}
+  }
+  delete_data(id: any) {
+    console.log(id);
 
-register() {
-  console.log('inputc_id: ' + this.inputc_id);
-  console.log('inputc_name: ' + this.inputc_name);
-  console.log('inputc_lastname: ' + this.inputc_lastname);
-  console.log('inputc_address: ' + this.inputc_address);
-  console.log('inputc_tel: ' + this.inputc_tel);
+    axios.get('http://localhost/ionicserver/delete_customer.php?id=' + id)
+      .then(() => {
+        console.log("ลบข้อมูลเรียบร้อย");
+        this.loaddata();
+      });
+  }
 
-  axios.post('http://localhost/ionicserver/get_customers.php', {
-    id: this.inputc_id,
-    name: this.inputc_name,
-    lastname: this.inputc_lastname,
-    address: this.inputc_address,
-    tel: this.inputc_tel
-  }).then((response) => {
-    console.log(response);
-    
-    this.inputc_id = '';
-    this.inputc_name = '';
-    this.inputc_lastname = '';
-    this.inputc_address = '';
-    this.inputc_tel = '';
+  loaddata() {
+    axios.get('http://localhost/ionicserver/get_customer.php').then((response) => {
 
-  }).catch((error) => {
-    console.log(error);
-  });
+      console.log(response.data);
 
+      this.customers = response.data;
+
+    })
+      .catch((error) => {
+
+        console.log(error);
+      })
+      .then(() => {
+
+      });
   }
 }
